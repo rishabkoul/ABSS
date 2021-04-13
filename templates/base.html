@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load pwa %}
+<head>
+    {% progressive_web_app_meta %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/icon-160x160.png' %}"/>
+    <title>ABSS</title>
+    {% include 'snippets/header.html' %}
+    {% include 'snippets/base_css.html' %}
+    
+</head>
+<body>
+    <style>
+        .main{
+            min-height: 100vh;
+            height: 100%;
+        }
+        #scrollTop{
+    opacity:0;
+    display:none;
+    width:30px;
+    height:30px;
+    position:fixed;
+    bottom:5vh;
+    right:5vh;
+    text-indent:-1000vw;
+    background-image:url(https://www.aritsltd.com/img/angle-up.svg);
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-color:rgba(0,0,0,0);
+    transition:all 0.15s ease-out;
+}
+    </style>
+    <div class="main">
+        {% block content %}
+
+    {% endblock content %}
+    <a href="#" id="scrollTop">Scroll</a>
+    </div>
+    <script>
+        var scrollAmountBeforeDisplay = 30;
+var scrollTransitiontime = 1200;
+var opacityTransitionTime = 150;
+
+
+$(document).ready(function(e) {
+    scrollTopFunction();
+})
+
+
+//1. Scroll to Top of the Page
+function scrollTopFunction() {
+    console.log($(window).scrollTop());
+    if ($(window).scrollTop() < scrollAmountBeforeDisplay) {
+        $('#scrollTop').fadeOut();
+    }
+    $(window).scroll(function() {
+        //If scroll amount is sufficient to display
+        if ($(this).scrollTop() > scrollAmountBeforeDisplay) {
+            if ($('#scrollTop').css("opacity") == "0") {
+                $('#scrollTop').css("display", "block");
+                setTimeout(function() {
+                    $('#scrollTop').css("opacity", "1");
+                }, opacityTransitionTime);
+            }
+        }
+        //If scroll amount is insufficient to display
+        else {
+            if ($('#scrollTop').css("opacity") !== "0") {
+                $('#scrollTop').css("opacity", "0");
+                setTimeout(function() {
+                    $('#scrollTop').css("display", "none");
+                }, opacityTransitionTime);
+            }
+        }
+    });
+    $('#scrollTop').bind("click", function(e) {
+        e.preventDefault();
+        window.location.hash = '';
+        $('html, body').animate({
+            scrollTop: 0
+        }, scrollTransitiontime);
+    });
+}
+    </script>
+   
+    {% include 'snippets/footer.html' %}
+</body>
+
+</html>

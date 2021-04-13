@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<style type="text/css">
+   .create-form {
+	    width: 100%;
+	    max-width: 100%;
+	    padding: 15px;
+	    margin: auto;
+  	}
+
+  	.submit-button{
+  		max-width: 200px;
+  	}
+
+	.image {
+	  opacity: 1;
+	  transition: .5s ease;
+	  backface-visibility: hidden;
+	}
+
+	.middle {
+	  transition: .5s ease;
+	  opacity: 0;
+	  position: absolute;
+	  text-align: center;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	
+	}
+	.image-group{
+		position: relative;
+  		text-align: center;
+  		cursor:pointer;
+	}
+
+	.image-group:hover .image {
+	  opacity: 0.3;
+	}
+
+	.image-group:hover .middle {
+	  opacity: 1;
+	}
+
+	.text {
+	  margin: auto;
+	  background-color: #4CAF50;
+	  color: white;
+	  font-size: 15px;
+	  padding: 15px;
+	}
+</style>
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-7 offset-lg-1">
+
+			{% if success_message %}
+				<h3 style="color:green; text-align: center;">{{success_message}}</h3>
+			{% endif %}
+
+			<form class="create-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+				<!-- title -->
+				<div class="form-group mb-4">
+					<label for="id_title">Title*</label>
+					<input class="form-control" type="text" name="title" id="id_title" placeholder="Title" value="{{form.initial.title}}" required autofocus>
+				</div>
+
+				<!-- Body -->
+				<div class="form-group mb-4">
+					<label for="id_body">Content</label>
+					<textarea class="form-control" rows="10" type="text" name="body" id="id_body" placeholder="Your Content here..." >{{form.initial.body}}</textarea>
+				</div>
+				{% for field in form %}
+                <p>
+            {% for error in field.errors %}
+            <p style="color: red;">{{field}} : {{error}}</p>
+            {% endfor %}
+                </p>
+                {% endfor %}
+
+				<!-- Image -->
+				<div class="form-group mb-4">
+                    <label for="id_image">Image
+						{% if form.initial.image %}
+						Previous Image - <a href="{{form.initial.image.url}}" target="_blank">Click Here</a>
+						{% endif %}
+					</label>
+                    <br>
+                    <input type="file" name="image" id="id_image" accept="image/*">
+				</div>
+
+                <div class="form-group mb-4">
+                    <label for="id_videofile">Video(mp4 supported) 
+						{% if form.initial.videofile %}
+						Previous Video - <a href="{{form.initial.videofile.url}}" target="_blank">Click Here</a>
+						{% endif %}
+					</label>
+                    <br>
+                    <input type="file" name="videofile" id="id_videofile" accept="video/mp4">
+				</div>
+				
+
+				{% for error in errors %}
+							<p style="color: red">{{ error }}</p>
+				{% endfor %}
+				{% if form.non_field_errors %}
+					<div style="color: red">
+						<p>{{form.non_field_errors}}</p>
+					</div>
+				{% endif %}
+
+				<!-- Submit btn -->
+				<button class="submit-button btn btn-lg btn-primary btn-block" type="submit">Update</button>
+			</form>	
+		</div>
+	</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+        console.log('hello');
+		$('input[type=file]').each(function() {
+			$(this).after(' <input type="checkbox" name="clear_image_'+$(this).attr('name')+'"/> Clear');
+		});
+	});
+	</script>
+
+{% endblock content %}
+

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+
+	@media (max-width: 768px) { 
+		.right-column{
+			margin-left: 0px;
+		}
+	}
+
+	@media (min-width: 768px) { 
+		.right-column{
+			margin-left: 20px;
+		}
+	}
+
+	.blog-post-container{
+		margin-bottom: 20px;
+		width: 100%;
+	}
+	.create-post-bar{
+		background-color: #fff;
+		margin-bottom:20px;
+	}
+
+	.left-column{
+		padding:0px;
+	}
+
+	.right-column{
+		padding:0px;
+	}
+	.lead{
+		font-size: 17px;
+	}
+	.search-bar{
+max-width: 500px;
+width: 100%;
+}
+</style>
+<div class="container">
+	<div class="row">
+		<div class='search-bar mt-2 offset-lg-1'>
+			<form method="GET">
+			  <input type="text" class="form-control" name="q" id="id_q" placeholder="Search..." value="{{query}}">
+			</form>
+			  </div>
+
+		<!-- blog feed -->
+		<div class="left-column col-lg-7 offset-lg-1 mt-3">
+
+			<!-- Top 'create post' bar -->
+			<div class="d-lg-none mb-3">
+				<div class="card m-auto d-flex flex-column p-3">
+					<p class="lead">Only Life Members can create a post</p>
+					{% if registration.membertype == 'Life Member' %}
+					<p class="m-auto"><a class="btn btn-primary" href="{% url 'post:create' %}">Create post</a></p>
+					{% endif %}
+				</div>
+			</div>
+			<!-- end Top 'create post' bar -->
+
+			<!-- Blog posts-->
+			<div class="infinite-container">
+			{% if posts %}
+			{% for post in posts %}
+				<div class="blog-post-container">
+					{% include 'post/snippets/post_snippet.html' with post=post %}
+				</div>
+			{% endfor %}
+			{% else %}
+			<div class="blog-post-container">
+				{% include 'post/snippets/post_snippet.html' with query=query %}
+			</div>
+			{% endif %}
+		</div>
+			<!-- End Blog posts-->
+			{% include 'post/snippets/post_pagination.html' with posts=posts %}
+		</div>
+		<!-- end blog feed -->
+		<div class="d-flex position-fixed" style="top:35vh;left:46vw">
+			<button class="btn btn-primary loading" style="display: none;">
+				<span class="spinner-border spinner-border-sm"></span>
+				Loading...
+			  </button>
+		</div>
+		
+
+
+		<!-- Right 'create post' column  -->
+		<div class="right-column col-lg-3 d-lg-flex d-none flex-column mt-3">
+
+			<div class="card create-post-bar d-flex flex-column p-3">
+				<p class="lead">Only Life Members can create a post</p>
+				{% if registration.membertype == 'Life Member' %}
+				<p class="m-auto"><a class="btn btn-primary" href="{% url 'post:create' %}">Create post</a></p>
+				{% endif %}
+			</div>
+		
+		</div>
+		<!-- end Right 'create post' column  -->
+
+	</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+	var infinite=new Waypoint.Infinite({
+		element:$('.infinite-container')[0],
+		offset:'bottom-in-view',
+
+		onBeforePageLoad: function(){
+			$('.loading').css("display","block")
+		},
+		onAfterPageLoad: function(){
+			$('.loading').css("display","none")
+		}
+	})
+</script>
+<script>
+	$('.delete').submit(function (e){
+		var id=this.id;
+		var href=this.action;
+		e.preventDefault();
+		var z=confirm('Are You Sure, You want to delete this Post');
+		if(z){
+			$.ajax({
+				url:href,
+				data:{},
+			})
+			$('#'+id).fadeOut(1000);
+		}
+		
+	})
+</script>
+
+{% endblock content %}

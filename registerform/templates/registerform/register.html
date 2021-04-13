@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .form-signin {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin select {
+  margin-bottom: 10px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input {
+  margin-bottom: 10px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+</style>
+
+<div class="form-signin">
+<form method="POST" id="registerForm" data-districts-url="{% url 'load-district' %}" data-subdistricts-url="{% url 'load-subdistrict' %}" data-postoffices-url="{% url 'load-postoffice' %}" data-villages-url="{% url 'load-village' %}">
+    {% csrf_token %}
+    <!-- {{ form.as_p }} -->
+    <h1 class="h3 mb-3 fw-normal">Enter Subscription Details</h1>
+    <label class="mb-3">Choose Member Type*</label>
+    <select required class="form-control" name="{{ form.membertype.name }}">
+        {% for instance in form.membertype %}
+            <option value="{{ instance.pk }}">{{ instance }}</option>
+        {% endfor %}
+    </select>
+    <label class="mb-3">Choose Member Category*</label>
+    <select required class="form-control" name="{{ form.membercategory.name }}">
+        {% for instance in form.membercategory %}
+            <option value="{{ instance.pk }}">{{ instance }}</option>
+        {% endfor %}
+    </select>
+    <label class="mb-3">Choose Area*</label>
+    <select required class="form-control" name="{{ form.area.name }}">
+        {% for instance in form.area %}
+            <option value="{{ instance.pk }}">{{ instance }}</option>
+        {% endfor %}
+    </select>
+    <label class="mb-3">Choose State*</label>
+    <select class="form-control" name="state" id="id_state" required>
+        <option value="">---------</option>
+        {% for state in states %}
+        <option value="{{ state }}">{{ forloop.counter }} {{ state }}</option>
+        {% endfor %}
+    </select>
+    <label class="mb-3">Choose District*</label>
+    <select class="form-control" name="district" id="id_district" required></select>
+    <label class="mb-3">Choose Sub District*</label>
+    <select class="form-control" name="subdistrict" id="id_subdistrict" required></select>
+    <label class="mb-3">Choose Post Office Name*</label>
+    <select class="form-control" name="postoffice" id="id_postoffice" required></select>
+    <label class="mb-3">Choose Village/Area Name*</label>
+    <select class="form-control" name="village" id="id_village" required></select>
+    <label class="mb-3">Enter Temple Name in which Working if Any</label>
+    <input class="form-control" type="text" name="templename">
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $('#id_state').change(function(){
+        const url=$('#registerForm').attr("data-districts-url");
+        const stateId=$(this).val();
+        $('#id_postoffice').html('')
+        $('#id_subdistrict').html('')
+        $('#id_district').html('')
+        $('#id_village').html('')
+        
+
+        $.ajax({
+            url:url,
+            data:{
+                'state_id':stateId
+            },
+            success:function(data){
+                $('#id_district').html(data);
+            }
+        })
+    })
+    $('#id_district').change(function(){
+        const url=$('#registerForm').attr("data-subdistricts-url");
+        const stateId=$('#id_state').val()
+        const districtId=$(this).val();
+        $('#id_postoffice').html('')
+        $('#id_subdistrict').html('')
+        $('#id_village').html('')
+
+        $.ajax({
+            url:url,
+            data:{
+                'state_id':stateId,
+                'district_id':districtId,
+            },
+            success:function(data){
+                $('#id_subdistrict').html(data);
+            }
+        })
+    })
+    $('#id_subdistrict').change(function(){
+        const url=$('#registerForm').attr("data-postoffices-url");
+        const stateId=$('#id_state').val()
+        const districtId=$('#id_district').val();
+        const subdistrictId=$(this).val();
+        $('#id_postoffice').html('')
+        $('#id_village').html('')
+        
+
+        $.ajax({
+            url:url,
+            data:{
+                'state_id':stateId,
+                'district_id':districtId,
+                'subdistrict_id':subdistrictId,
+            },
+            success:function(data){
+                $('#id_postoffice').html(data);
+            }
+        })
+    })
+    $('#id_postoffice').change(function(){
+        const url=$('#registerForm').attr("data-villages-url");
+        const stateId=$('#id_state').val()
+        const districtId=$('#id_district').val();
+        const subdistrictId=$('#id_subdistrict').val();
+        const postofficeId=$(this).val();
+        $('#id_village').html('')
+        
+
+        $.ajax({
+            url:url,
+            data:{
+                'state_id':stateId,
+                'district_id':districtId,
+                'subdistrict_id':subdistrictId,
+                'postoffice_id':postofficeId,
+            },
+            success:function(data){
+                $('#id_village').html(data);
+            }
+        })
+    })
+</script>
+
+{% endblock content %}

@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for postoffice in postoffices %}
+<option value="{{ postoffice }}">{{ forloop.counter }} {{ postoffice }}</option>
+{% endfor %}

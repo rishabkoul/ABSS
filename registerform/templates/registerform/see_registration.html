@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center">
+    {% if registration.is_approved %}
+    <h1 class="h3 mb-3 fw-normal">Your Code is {{ registration.code }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your Member Type is {{ registration.membertype }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your Member Category is {{ registration.membercategory }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your Area is {{ registration.area }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your State Name is {{ registration.state }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your District Name is {{ registration.district }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your Subdistrict Name is {{ registration.subdistrict }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your Postoffice Name is {{ registration.postoffice }}</h1>
+    <h1 class="h3 mb-3 fw-normal">Your Village/Area Name is {{ registration.village }}</h1>
+    {% if registration.templename %}
+    <h1 class="h3 mb-3 fw-normal">Your Templename Name is {{ registration.templename }}</h1>
+    {% endif %}
+    {% else %}
+    <h1 class="h3 mb-3 fw-normal">You have been not approved yet for the Subscription we will send you an email when the admin will approve you</h1>
+    {% endif %}
+</div>
+
+
+{% endblock content %}

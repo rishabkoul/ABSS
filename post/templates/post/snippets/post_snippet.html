@@ -1,0 +1,62 @@
+<style type="text/css">
+	.card{
+		max-width: 700px;
+	}
+	.card-body{
+		padding: 20px;
+		width: 100%;
+	}
+</style>
+{% if post %}
+<div class="infinite-item mt-4" id="{{post.pk}}">
+<div class="container">
+	<div class="row">
+		<!-- Blog Post -->
+		<div class="card">
+            {% if post.image %}
+				<img class="card-img-top" src="{{post.image.url}}">
+            {% endif %}
+
+            {% if post.videofile %}
+            <video controls>
+                <source src="{{post.videofile.url}}" type="video/mp4">
+              Your browser does not support the video tag.
+              </video>
+            {% endif %}
+			
+			<div class="card-body mt-2 mb-2">
+
+					<h2 class="card-title">{{post.title}}</h2>
+
+                {% if post.body %}
+				<p class="card-text">{{post.body}}</p>
+                {% endif %}
+				{% if post.author == request.user %}
+					<a href="{% url 'post:edit' post.pk %}" class="btn btn-primary">Update</a>
+					<form style="display: inline;" method="POST" action="{% url 'post:delete' post.pk %}" id="{{post.pk}}" class="delete">
+						{% csrf_token %}
+						<input type='submit' value="Delete" class="btn btn-danger">
+					</form>
+				{% endif %}
+			</div>
+			<div class="card-footer text-muted">
+			  Updated on {{post.date_updated}} by {{post.author}}
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% else %}
+<div class="container">
+<div class="row">
+<div class="card m-auto">
+<div class="card-body mt-2 mb-2">
+<h2 class="card-title">
+	No results
+</h2>
+<p class="card-text">There were no results matching your search: "{{query}}"</p>
+</div>
+</div>
+</div>
+</div>
+{% endif %}
