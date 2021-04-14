@@ -203,6 +203,9 @@ def resetpassword(request):
     context = {}
 
     if request.POST:
-        return redirect('resetpasswordview', request.POST.get('phone'))
+        if(Account.objects.filter(phone=request.POST.get('phone'))):
+            return redirect('resetpasswordview', request.POST.get('phone'))
+        else:
+            context['message'] = 'Phone no does not exist'
 
     return render(request, 'account/resetpassword.html', context)

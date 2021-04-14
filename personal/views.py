@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from registerform.models import RegistrationForm
 
 # Create your views here.
@@ -8,9 +8,7 @@ def home_screen_view(request):
     context = {}
 
     if request.user.is_authenticated:
-        registration = RegistrationForm.objects.filter(user=request.user)
-        if registration:
-            registration = registration[0]
+        return redirect('feed')
     else:
         registration = None
 

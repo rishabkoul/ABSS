@@ -31,6 +31,8 @@ class AccountAuthenticationForm(forms.ModelForm):
 
 class AccountUpdateForm(forms.ModelForm):
 
+    email = forms.EmailField(max_length=60, required=False)
+
     class Meta:
         model = Account
         fields = ('email', 'username', 'phone')

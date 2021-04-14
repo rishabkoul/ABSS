@@ -49,7 +49,8 @@
 <form method="POST">{% csrf_token %}
     <h1 class="h3 mb-3 fw-normal">Register an account</h1>
     
-    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" autofocus>
+    <label for="exampleInputEmail1">Email address not Compulsory to give</label>
+    <input  type="email" name="email" id="inputEmail" class="form-control mt-2" placeholder="Email address" autofocus>
 
     <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required>
 
