@@ -135,6 +135,28 @@ width: 100%;
 		}
 		
 	})
+
+	$(".like").click(function(e) { 
+    var id =  this.id ; 
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();  // don't follow the link
+
+    $.ajax({
+        url: href,
+        data: {'likeId':id},
+        success:function(response)
+        {
+          if(response.liked){
+            $("#like_text"+id).html("Liked");
+			$("#nofolikes"+id).html("Likes - "+response.nofolikes);
+          }else{
+            $("#like_text"+id).html("Like");
+			$("#nofolikes"+id).html("Likes - "+response.nofolikes);
+          }
+        }
+    });
+
+  });
 </script>
 
 {% endblock content %}

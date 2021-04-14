@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from registerform.models import RegistrationForm
-from post.models import Post
+from post.models import Post, Like
 from operator import attrgetter
 from post.forms import CreatePostForm, UpdatePostForm
 from account.models import Account
 from django.db.models import Q
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+import json
+from django.http import HttpResponse
 
 BLOG_POSTS_PER_PAGE = 10
 
@@ -31,7 +33,7 @@ def create_post_view(request):
     form = CreatePostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         obj = form.save(commit=False)
-        author = Account.objects.filter(email=user.email).first()
+        author = Account.objects.filter(username=user.username).first()
         obj.author = author
         obj.save()
         return redirect('feed')
@@ -86,7 +88,7 @@ def edit_post_view(request, pk):
     return render(request, 'post/edit_post.html', context)
 
 
-def get_post_queryset(query=None):
+def get_post_queryset(request, query=None):
     queryset = []
     queries = query.split(" ")
     for q in queries:
@@ -96,6 +98,14 @@ def get_post_queryset(query=None):
         ).distinct()
 
         for post in posts:
+            is_liked = Like.objects.filter(post=post, user=request.user)
+            likes = Like.objects.filter(post=post)
+            if is_liked:
+                post.is_liked = True
+            if likes:
+                post.nooflike = likes[0].getnooflikes()
+            else:
+                post.nooflike = 0
             queryset.append(post)
 
     return list(set(queryset))
@@ -133,7 +143,7 @@ def show_feed(request):
         query = request.GET.get('q', '')
         context['query'] = str(query)
 
-    posts = sorted(get_post_queryset(query),
+    posts = sorted(get_post_queryset(request, query),
                    key=attrgetter('date_updated'), reverse=True)
 
     page = request.GET.get('page', 1)
@@ -162,3 +172,25 @@ def delPost(request, pk):
     post_ = Post.objects.filter(pk=pk)
     post_.delete()
     return redirect('feed')
+
+
+def likePost(request):
+    resp = {}
+    post_id = request.GET.get("likeId", "")
+    post = Post.objects.get(pk=post_id)
+    user = request.user
+    like = Like.objects.filter(post=post, user=user)
+    liked = False
+    if like:
+        Like.dislike(post, user)
+        resp["nofolikes"] = Like.objects.filter(
+            post=post).first().getnooflikes()
+    else:
+        liked = True
+        Like.like(post, user)
+        resp["nofolikes"] = Like.objects.filter(
+            post=post).first().getnooflikes()
+
+    resp["liked"] = liked
+    response = json.dumps(resp)
+    return HttpResponse(response, content_type="application/json")

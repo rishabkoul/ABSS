@@ -42,8 +42,8 @@ class RegistrationForm(models.Model):
         URBAN = 'Urban'
         RURAL = 'Rural'
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE)
     membertype = models.CharField(
         max_length=50, choices=MemberType.choices, default=MemberType.GENERAL_MEMBER)
     membercategory = models.CharField(
