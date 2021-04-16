@@ -4,8 +4,9 @@
 
 
     <div class="container mt-4 text-center">
-        <h1>Welcome {% if request.user.is_authenticated %}{{request.user.username}}{% else %}to ABSS{% endif %}</h1>
-        <h3>{% if request.user.is_authenticated %}You are now logged in use the hamburger menu to acces our services{% else %}Start by logging in using the hamburger menu on the top right{% endif %}</h3>
+        <h1>Welcome to ABSS</h1>
+        <h3>Start by Signing in using the button below</h3>
+        <a class="btn btn-primary btn-lg" href="{% url 'login' %}">Sign In</a>
     </div>
 
 

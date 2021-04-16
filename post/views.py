@@ -194,3 +194,18 @@ def likePost(request):
     resp["liked"] = liked
     response = json.dumps(resp)
     return HttpResponse(response, content_type="application/json")
+
+
+def detail_post_view(request, pk):
+    context = {}
+    post = get_object_or_404(Post, pk=pk)
+    is_liked = Like.objects.filter(post=post, user=request.user)
+    likes = Like.objects.filter(post=post)
+    if is_liked:
+        post.is_liked = True
+    if likes:
+        post.nooflike = likes[0].getnooflikes()
+    else:
+        post.nooflike = 0
+    context['post'] = post
+    return render(request, 'post/detail_post.html', context)

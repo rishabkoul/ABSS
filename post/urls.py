@@ -4,6 +4,7 @@ from post.views import(
     edit_post_view,
     delPost,
     likePost,
+    detail_post_view,
 )
 
 app_name = 'post'
@@ -13,4 +14,5 @@ urlpatterns = [
     path('<pk>/edit', edit_post_view, name='edit'),
     path('<pk>/delete', delPost, name='delete'),
     path('like', likePost, name='likepost'),
+    path('<pk>', detail_post_view, name='detail'),
 ]

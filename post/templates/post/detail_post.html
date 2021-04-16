@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .card{
+        max-width: 700px;
+    }
+    .container{
+        padding: 20px;
+    }
+</style>
+
+<div class="container">
+<div class="row">
+
+<div class="card m-auto">
+    {% if post.image %}
+<img class="card-img-top" src="{{post.image.url}}" alt="">
+{% endif %}
+{% if post.videofile %}
+            <video controls>
+                <source src="{{post.videofile.url}}" type="video/mp4">
+              Your browser does not support the video tag.
+              </video>
+            {% endif %}
+    <div class="card-body my-2">
+<h2 class="card-title">{{post.title}}</h2>
+{% if post.body %}
+<p class="card-text">{{post.body}}</p>
+{% endif %}
+<p class="card-text" id="nofolikes{{post.pk}}">Likes - {{post.nooflike}}</p>
+<button class="btn btn-light like" style="border-color: red;" id="{{post.pk}}">
+    {% if post.is_liked %}
+  <a href="{% url 'post:likepost' %}" style="color: red;text-decoration: none;" id="like_text{{post.pk}}">Liked</a>
+  {% else %}
+  <a href="{% url 'post:likepost' %}" style="color: red;text-decoration: none;" id="like_text{{post.pk}}">Like</a>
+  {% endif %}
+  </button>
+    </div>
+    <div class="card-footer text-muted">
+        Updated on {{post.date_updated}} by {{post.author}}
+    </div>
+</div>
+
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $(".like").click(function(e) { 
+    var id =  this.id ; 
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();  // don't follow the link
+
+    $.ajax({
+        url: href,
+        data: {'likeId':id},
+        success:function(response)
+        {
+          if(response.liked){
+            $("#like_text"+id).html("Liked");
+			$("#nofolikes"+id).html("Likes - "+response.nofolikes);
+          }else{
+            $("#like_text"+id).html("Like");
+			$("#nofolikes"+id).html("Likes - "+response.nofolikes);
+          }
+        }
+    });
+
+  });
+</script>
+
+
+{% endblock content %}

@@ -107,8 +107,11 @@ ul{
   {% for post in posts %}
   <div  class="infinite-item card" id="{{post.pk}}">
     <div class="card-body">
-  <a style="text-decoration: none;" href="{% url 'post:edit' post.pk %}">
+  <a style="text-decoration: none;" href="{% url 'post:detail' post.pk %}">
     <h5 class="card-title">{{post}}</h5>
+  </a>
+  <a class="btn btn-warning" style="color: white;" href="{% url 'post:edit' post.pk %}">
+    Edit
   </a>
   <form style="display: inline;" method="POST" action="{% url 'post:delete' post.pk %}" id="{{post.pk}}" class="delete">
     {% csrf_token %}

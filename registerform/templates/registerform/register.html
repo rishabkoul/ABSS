@@ -25,7 +25,7 @@
 <form method="POST" id="registerForm" data-districts-url="{% url 'load-district' %}" data-subdistricts-url="{% url 'load-subdistrict' %}" data-postoffices-url="{% url 'load-postoffice' %}" data-villages-url="{% url 'load-village' %}">
     {% csrf_token %}
     <!-- {{ form.as_p }} -->
-    <h1 class="h3 mb-3 fw-normal">Enter Subscription Details</h1>
+    <h1 class="h3 mb-3 fw-normal">Enter Account Details</h1>
     <label class="mb-3">Choose Member Type*</label>
     <select required class="form-control" name="{{ form.membertype.name }}">
         {% for instance in form.membertype %}
